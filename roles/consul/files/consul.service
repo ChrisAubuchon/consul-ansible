@@ -1,0 +1,19 @@
+[Unit]
+Description=Consul
+Documentation=htts://www.consul.io
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=consul
+Group=consul
+EnvironmentFile=/etc/sysconfig/consul
+ExecStart=/usr/bin/consul agent -config-dir=${CONFIG_DIR} -data-dir=${DATA_DIR} $EXTRA_OPTS
+ExecReload=/usr/bin/consul reload
+ExecStop=/usr/bin/consul leave
+LimitNOFILE=65536
+Restart=on-success
+IgnoreSIGPIPE=yes
+
+[Install]
+WantedBy=multi-user.target

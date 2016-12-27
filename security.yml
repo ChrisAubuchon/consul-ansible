@@ -1,0 +1,52 @@
+---
+chronos_http_credentials: admin:asteris
+chronos_principal: chronos
+chronos_secret: qg0Jv8fYucIwGTYSg7BD7QGXi0679OIFimiRai65NaQd
+consul_acl_agent_token: 4a6e2992-230b-4e42-84ac-e63dfa6f0e8e
+consul_acl_mantl_api_token: adf3579b-4245-4a32-803f-794c1b9ded1f
+consul_acl_marathon_token: 12215ba3-7223-4515-9852-b1dccc85f3f9
+consul_acl_master_token: 93edf4ec-4eef-4ad3-9e08-ebe54f1647d8
+consul_acl_secure_token: e8502f4e-1847-45ae-a9d0-f6a28c57d5c5
+consul_acl_vault_token: 26196f7a-2b3f-425d-9c51-cdad71bbde3c
+consul_gossip_key: AbHC7zp+jxGECsXedVaUog==
+do_chronos_auth: true
+do_chronos_iptables: true
+do_chronos_ssl: true
+do_consul_auth: true
+do_consul_ssl: true
+do_mantl_api_auth: true
+do_mantlui_auth: true
+do_mantlui_ssl: true
+do_marathon_auth: true
+do_marathon_iptables: true
+do_marathon_ssl: true
+do_mesos_auth: true
+do_mesos_follower_auth: true
+do_mesos_framework_auth: true
+do_mesos_iptables: true
+do_mesos_ssl: true
+do_private_docker_registry: false
+mantl_api_principal: mantl-api
+mantl_api_secret: 2jnEFnvJ25kCk02cGeQxTWdSeFSXcNfScCXMsf35hN7k
+marathon_http_credentials: admin:asteris
+marathon_principal: marathon
+marathon_secret: PNu4TVcwHttOYeLQE6flfCtlPiFPQjBEloDNiUM7mz6H
+mesos_credentials:
+- {principal: marathon, secret: PNu4TVcwHttOYeLQE6flfCtlPiFPQjBEloDNiUM7mz6H}
+- {principal: chronos, secret: qg0Jv8fYucIwGTYSg7BD7QGXi0679OIFimiRai65NaQd}
+- {principal: mantl-api, secret: 2jnEFnvJ25kCk02cGeQxTWdSeFSXcNfScCXMsf35hN7k}
+mesos_follower_principal: follower
+mesos_follower_secret: L6v5Fx7dPMqnBO02rIE5sN/gcyxzTvJJkS/5wCwEzBOQ
+nginx_admin_password: asteris
+security_enabled: true
+zk_chronos_user: chronos
+zk_chronos_user_secret: lDqYlufiNy81vhK4
+zk_chronos_user_secret_digest: YdcB5WziySDYo7o/n7BkC838Gxw=
+zk_marathon_user: marathon
+zk_marathon_user_secret: LjVhpzxccUrXbxek
+zk_marathon_user_secret_digest: mfpJMyM4TnQmfsgKXpCQq+p+Vtc=
+zk_mesos_user: mesos
+zk_mesos_user_secret: P1FlQqVbBAySbikv
+zk_mesos_user_secret_digest: uUKe7/QWXSx2XmKFh1IHXM+4Nh8=
+zk_super_user: super
+zk_super_user_secret: ltnbHgxGUHfVhw04mOE8tjDXzo9AIr8bM5rciuFXXXZM

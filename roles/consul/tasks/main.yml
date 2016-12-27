@@ -1,0 +1,150 @@
+---
+- name: download consul
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+  tags:
+    - consul
+  with_items:
+    - url: "https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_amd64.zip"
+      dest: /tmp/consul.zip
+    - url: "https://github.com/CiscoCloud/consul-cli/releases/download/v{{ consul_cli_version }}/consul-cli_{{ consul_cli_version }}_linux_amd64.tar.gz"
+      dest: /tmp/consul-cli.tar.gz
+
+- name: install consul
+  become: true
+  unarchive:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    extra_opts: "{{ item.opts }}"
+  with_items:
+    - src: /tmp/consul.zip
+      dest: /usr/bin
+      opts: []
+    - src: /tmp/consul-cli.tar.gz
+      dest: /usr/bin
+      opts: [ "--strip-components=1" ]
+  tags:
+    - consul
+
+- name: create consul group
+  become: true
+  group:
+    name: consul
+    state: present
+  tags:
+    - consul
+
+- name: create consul user
+  become: true
+  user:
+    name: consul
+    comment: "Consul Agent user"
+    group: consul
+    state: present
+  tags:
+    - consul
+
+- name: create directory structure
+  become: yes
+  file:
+    path: "{{ item }}"
+    owner: consul
+    group: consul
+    mode: u=rwx,g=rx,o=rx
+    state: directory
+  with_items:
+    - /etc/consul
+    - /var/lib/consul
+  tags:
+    - consul
+
+- name: create service
+  become: yes
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  with_items:
+    - src: consul.service
+      dest: /etc/systemd/system/consul.service
+      mode: u=rw,g=r
+    - src: consul.sysconfig
+      dest: /etc/sysconfig/consul
+      mode: u=rw,g=r
+  notify:
+    - reload systemd
+
+- name: configure consul
+  sudo: yes
+  template:
+    src: "{{ item }}.j2"
+    dest: /etc/consul/{{ item }}
+    owner: consul
+    group: consul
+  with_items:
+    - consul.json
+    - acl.json
+  notify:
+    - restart consul
+  tags:
+    - consul
+
+#- name: register docker with consul
+#  sudo: yes
+#  copy:
+#    src: docker-service.json
+#    dest: /etc/consul
+#    owner: consul
+#    group: consul
+#  notify:
+#    - reload consul
+#  tags:
+#    - consul
+
+- name: install scripts
+  become: yes
+  copy:
+    src: "{{ item }}"
+    dest: /usr/local/bin/
+    mode: 0755
+  with_items:
+    - consul-wait-for-leader.sh
+    - consul-rolling-restart.sh
+    - check-service-active
+  tags:
+    - consul
+
+- name: start consul
+  sudo: yes
+  service:
+    name: consul
+    enabled: yes
+    state: started
+  tags:
+    - consul
+
+# Give consul time to elect a leader
+- name: wait for leader
+  command: /usr/local/bin/consul-wait-for-leader.sh
+  tags:
+    - consul
+
+- meta: flush_handlers
+  tags:
+    - consul
+
+#- name: create secure acl
+#  sudo: yes
+#  run_once: yes
+#  command: consul-cli acl-update --token={{ consul_acl_master_token }} --name="Mantl Secure Token" --rule='key:secure:write' --rule='service::write' {{ consul_acl_secure_token }}
+#  tags:
+#    - consul
+
+- include: acl.yml
+
+- meta: flush_handlers
+  tags:
+    - consul
+
+# - include: nginx_proxy.yml
