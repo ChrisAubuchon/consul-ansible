@@ -8,22 +8,19 @@
   with_items:
     - url: "https://releases.hashicorp.com/consul/{{ consul_version }}/consul_{{ consul_version }}_linux_amd64.zip"
       dest: /tmp/consul.zip
-    - url: "https://github.com/CiscoCloud/consul-cli/releases/download/v{{ consul_cli_version }}/consul-cli_{{ consul_cli_version }}_linux_amd64.tar.gz"
-      dest: /tmp/consul-cli.tar.gz
+    - url: https://github.com/ChrisAubuchon/consul-cli/releases/download/v{{ consul_cli_version }}/consul-cli_{{ consul_cli_version }}_linux_amd64.zip
+      dest: /tmp/consul-cli.zip
 
 - name: install consul
   become: true
   unarchive:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    extra_opts: "{{ item.opts }}"
   with_items:
     - src: /tmp/consul.zip
       dest: /usr/bin
-      opts: []
-    - src: /tmp/consul-cli.tar.gz
+    - src: /tmp/consul-cli.zip
       dest: /usr/bin
-      opts: [ "--strip-components=1" ]
   tags:
     - consul
 

@@ -20,4 +20,4 @@ consul_verify_outgoing: true
 consul_allow_stale: true
 consul_max_stale: 5s
 consul_version: 0.7.2
-consul_cli_version: 0.3.1
+consul_cli_version: 0.4.0
