@@ -2,6 +2,7 @@ docs/_build
 *.pyc
 .vagrant
 security.yml
+vagrant.retry
 
 # TLS certificates
 ssl/**/*.pem
